@@ -1,5 +1,8 @@
 # 忽略虚拟环境文件夹
 venv/
+.venv/
+build/
+dist/
 
 # 忽略编译生成的文件
 __pycache__/
