@@ -1,0 +1,5 @@
+-i https://mirrors.aliyun.com/pypi/simple/
+pyautogui
+opencv-python
+pywin32
+pyinstaller
