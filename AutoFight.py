@@ -62,8 +62,6 @@ def find_and_click_image(window_title, target_image_path, confidence=0.8):
     screenshot = ImageGrab.grab(bbox=rect)
     screenshot = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2BGR)
 
-    # print(f"Trying to load image from: {target_image_path}")
-
     target_image = cv2.imread(target_image_path, cv2.IMREAD_COLOR)
 
     if target_image is None:
@@ -85,15 +83,27 @@ def find_and_click_image(window_title, target_image_path, confidence=0.8):
         random_offset_x = random.randint(-target_width // 4, target_width // 4)
         random_offset_y = random.randint(-target_height // 4, target_height // 4)
 
-        rd_time = random.uniform(1, 3)
-        # print(f"发现对应图片：{target_image_path}")
-        time.sleep(rd_time)
-        pyautogui.moveTo(center_x + random_offset_x, center_y + random_offset_y)
-        pyautogui.click()
-        print(f"click,等待时间：{rd_time}秒")
-        
+        # 如果是 guibing_jieshu_2.png，设置 rd_time 为 3 秒
+        if os.path.basename(target_image_path) == 'guibing_jieshu_2.png':
+            print("find guibing_jieshu_2.png,waiting 3s")
+            rd_time = 3
+        else:
+            rd_time = random.uniform(1, 3)
 
-        return True
+        time.sleep(rd_time)
+
+        # 重新截图并再次确认图像是否存在
+        screenshot = ImageGrab.grab(bbox=rect)
+        screenshot = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2BGR)
+        result = cv2.matchTemplate(screenshot, target_image, cv2.TM_CCOEFF_NORMED)
+        _, max_val, _, max_loc = cv2.minMaxLoc(result)
+
+        if max_val >= confidence:
+            pyautogui.moveTo(center_x + random_offset_x, center_y + random_offset_y)
+            pyautogui.click()
+            print(f"click,等待时间：{rd_time}秒")
+            return True
+
     return False
 
 def find_game_window():
@@ -177,7 +187,7 @@ def fight_end_num():
 
     if end_fail_number == 3 or start_fail_number == 3:
         stop_script()
-        messagebox.showerror("连续点击三次,脚本停止")
+        messagebox.showerror("错误","连续点击三次,脚本停止")
 
 
 def stop_script():
@@ -192,7 +202,7 @@ root = tk.Tk()
 root.title("痒痒鼠护肝小助手")
 # 设置窗口大小
 window_width = 400
-window_height = 150
+window_height = 200
 # 使用 after 方法在窗口显示后设置窗口位置
 root.after(0, center_window, root, window_width, window_height)
 
@@ -225,6 +235,10 @@ start_huntu.grid(row=3, column=1, pady=10)
 #创建爬塔按钮
 start_pata = tk.Button(root, text="爬塔挑战", command=partial(start_script, run_script, 'pata_tiaozhan.png','pata_jieshu.png','xuanshang_jvjue.png','huntu_jieshu_2000.png'))
 start_pata.grid(row=3, column=2, pady=10)
+
+#创建爬塔按钮
+start_guibing = tk.Button(root, text="鬼兵演武", command=partial(start_script, run_script, 'guibing_tiaozhan.png','guibing_jieshu.png','xuanshang_jvjue.png','guibing_jieshu_2.png'))
+start_guibing.grid(row=4, column=0, pady=10)
 
 # 运行主循环
 root.mainloop()
