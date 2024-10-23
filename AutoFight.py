@@ -52,6 +52,17 @@ def activate_client_window(window_title, width=None, height=None):
     else:
         return False
 
+def is_color_similar(image1, image2, threshold=30):
+    # 计算两个图像的平均颜色
+    mean_color1 = np.mean(image1, axis=(0, 1))
+    mean_color2 = np.mean(image2, axis=(0, 1))
+    
+    # 计算颜色差异
+    color_diff = np.linalg.norm(mean_color1 - mean_color2)
+    
+    # 判断颜色差异是否在阈值范围内
+    return color_diff < threshold
+
 def find_and_click_image(window_title, target_image_path, confidence=0.8):
     hwnd = win32gui.FindWindow(None, window_title)
     if not hwnd:
@@ -80,29 +91,32 @@ def find_and_click_image(window_title, target_image_path, confidence=0.8):
         center_x = max_loc[0] + target_width // 2 + rect[0]
         center_y = max_loc[1] + target_height // 2 + rect[1]
 
-        random_offset_x = random.randint(-target_width // 4, target_width // 4)
-        random_offset_y = random.randint(-target_height // 4, target_height // 4)
+        # 提取匹配区域
+        matched_region = screenshot[max_loc[1]:max_loc[1]+target_height, max_loc[0]:max_loc[0]+target_width]
 
-        # 如果是 guibing_jieshu_2.png，设置 rd_time 为 3 秒
-        if os.path.basename(target_image_path) == 'guibing_jieshu_2.png':
-            print("find guibing_jieshu_2.png,waiting 3s")
-            rd_time = 3
-        else:
-            rd_time = random.uniform(1, 3)
+        # 检查颜色相似度
+        if is_color_similar(matched_region, target_image):
+            random_offset_x = random.randint(-target_width // 4, target_width // 4)
+            random_offset_y = random.randint(-target_height // 4, target_height // 4)
 
-        time.sleep(rd_time)
+            if os.path.basename(target_image_path) == 'guibing_jieshu_2.png':
+                print("find guibing_jieshu_2.png,waiting 3s")
+                rd_time = 3
+            else:
+                rd_time = random.uniform(1, 3)
 
-        # 重新截图并再次确认图像是否存在
-        screenshot = ImageGrab.grab(bbox=rect)
-        screenshot = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2BGR)
-        result = cv2.matchTemplate(screenshot, target_image, cv2.TM_CCOEFF_NORMED)
-        _, max_val, _, max_loc = cv2.minMaxLoc(result)
+            time.sleep(rd_time)
 
-        if max_val >= confidence:
-            pyautogui.moveTo(center_x + random_offset_x, center_y + random_offset_y)
-            pyautogui.click()
-            print(f"click,等待时间：{rd_time}秒")
-            return True
+            screenshot = ImageGrab.grab(bbox=rect)
+            screenshot = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2BGR)
+            result = cv2.matchTemplate(screenshot, target_image, cv2.TM_CCOEFF_NORMED)
+            _, max_val, _, max_loc = cv2.minMaxLoc(result)
+
+            if max_val >= confidence:
+                pyautogui.moveTo(center_x + random_offset_x, center_y + random_offset_y)
+                pyautogui.click()
+                print(f"click,等待时间：{rd_time}秒")
+                return True
 
     return False
 
@@ -126,7 +140,7 @@ def start_script(target_function, *args, **kwargs):
     script_thread = threading.Thread(target=target_function, args=args, kwargs=kwargs)
     script_thread.start()
 
-def run_script(start_image, end_image1, other_image, end_image2):
+def run_script(start_image, end_image1, end_image2 , other_image):
     global fight_number
     global xuanshang_number
     global start_fail_number
@@ -157,6 +171,7 @@ def run_script(start_image, end_image1, other_image, end_image2):
             print("点击挑战")
             end_fail_number = 0
             start_fail_number += 1
+            fight_number += 1
             time.sleep(3)
 
         if not script_running:
@@ -165,12 +180,8 @@ def run_script(start_image, end_image1, other_image, end_image2):
         if find_and_click_image(entry_window_title.get(), end1) or find_and_click_image(entry_window_title.get(), end2):
             start_fail_number = 0
             end_fail_number += 1
-            fight_number += 1
             print("结束，挑战次数:", fight_number,"\n")
             time.sleep(1)
-
-
-
 
 def fight_end_num():
     global fight_number
@@ -225,20 +236,28 @@ stop_yulin = tk.Button(root, text="停止战斗", command=stop_script)
 stop_yulin.grid(row=2, column=2, pady=10)
 
 # 创建御灵按钮
-start_yulin = tk.Button(root, text="御灵挑战", command=partial(start_script, run_script, 'yulin_tiaozhan.png','yulin_jieshu.png','xuanshang_jvjue.png','huntu_jieshu_2000.png'))
+start_yulin = tk.Button(root, text="御灵挑战", command=partial(start_script, run_script, 'yulin_tiaozhan.png','yulin_jieshu.png','huntu_jieshu_2000.png','xuanshang_jvjue.png'))
 start_yulin.grid(row=3, column=0, pady=10)
 
-#创建魂土按钮
-start_huntu = tk.Button(root, text="单人魂土", command=partial(start_script, run_script, 'huntu_tiaozhan.png','huntu_jieshu.png','xuanshang_jvjue.png','huntu_jieshu_2000.png'))
-start_huntu.grid(row=3, column=1, pady=10)
+# # 创建魂土按钮
+# start_huntu = tk.Button(root, text="单人魂土", command=partial(start_script, run_script, 'huntu_tiaozhan.png','huntu_jieshu.png','huntu_jieshu_2000.png','xuanshang_jvjue.png'))
+# start_huntu.grid(row=3, column=1, pady=10)
 
-#创建爬塔按钮
-start_pata = tk.Button(root, text="爬塔挑战", command=partial(start_script, run_script, 'pata_tiaozhan.png','pata_jieshu.png','xuanshang_jvjue.png','huntu_jieshu_2000.png'))
-start_pata.grid(row=3, column=2, pady=10)
+# 创建爬塔按钮
+start_pata = tk.Button(root, text="活动挑战", command=partial(start_script, run_script, 'huodong_tiaozhan.png','huodong_jieshu_1.png','huodong_jieshu_2.png','xuanshang_jvjue.png'))
+start_pata.grid(row=3, column=1, pady=10)
 
-#创建爬塔按钮
-start_guibing = tk.Button(root, text="鬼兵演武", command=partial(start_script, run_script, 'guibing_tiaozhan.png','guibing_jieshu.png','xuanshang_jvjue.png','guibing_jieshu_2.png'))
-start_guibing.grid(row=4, column=0, pady=10)
+# 创建活动按钮
+start_guibing = tk.Button(root, text="鬼兵演武", command=partial(start_script, run_script, 'guibing_tiaozhan.png','guibing_jieshu.png','guibing_jieshu_2.png','xuanshang_jvjue.png'))
+start_guibing.grid(row=3, column=2, pady=10)
+
+# 司机
+start_siji = tk.Button(root, text="魂土司机", command=partial(start_script, run_script, 'siji_tiaozhan.png','siji_jieshu_1.png','siji_jieshu_2.png','xuanshang_jvjue.png'))
+start_siji.grid(row=4, column=0, pady=10)
+
+# 打手
+start_dashou = tk.Button(root, text="魂土打手", command=partial(start_script, run_script, 'siji_tiaozhan.png','siji_jieshu_1.png','siji_jieshu_2.png','xuanshang_jvjue.png'))
+start_dashou.grid(row=4, column=1, pady=10)
 
 # 运行主循环
 root.mainloop()
