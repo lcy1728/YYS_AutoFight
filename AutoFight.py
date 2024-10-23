@@ -239,10 +239,6 @@ stop_yulin.grid(row=2, column=2, pady=10)
 start_yulin = tk.Button(root, text="御灵挑战", command=partial(start_script, run_script, 'yulin_tiaozhan.png','yulin_jieshu.png','huntu_jieshu_2000.png','xuanshang_jvjue.png'))
 start_yulin.grid(row=3, column=0, pady=10)
 
-# # 创建魂土按钮
-# start_huntu = tk.Button(root, text="单人魂土", command=partial(start_script, run_script, 'huntu_tiaozhan.png','huntu_jieshu.png','huntu_jieshu_2000.png','xuanshang_jvjue.png'))
-# start_huntu.grid(row=3, column=1, pady=10)
-
 # 创建爬塔按钮
 start_pata = tk.Button(root, text="活动挑战", command=partial(start_script, run_script, 'huodong_tiaozhan.png','huodong_jieshu_1.png','huodong_jieshu_2.png','xuanshang_jvjue.png'))
 start_pata.grid(row=3, column=1, pady=10)
@@ -251,13 +247,9 @@ start_pata.grid(row=3, column=1, pady=10)
 start_guibing = tk.Button(root, text="鬼兵演武", command=partial(start_script, run_script, 'guibing_tiaozhan.png','guibing_jieshu.png','guibing_jieshu_2.png','xuanshang_jvjue.png'))
 start_guibing.grid(row=3, column=2, pady=10)
 
-# 司机
-start_siji = tk.Button(root, text="魂土司机", command=partial(start_script, run_script, 'siji_tiaozhan.png','siji_jieshu_1.png','siji_jieshu_2.png','xuanshang_jvjue.png'))
+# 创建魂土主队按钮
+start_siji = tk.Button(root, text="魂土组队", command=partial(start_script, run_script, 'siji_tiaozhan.png','siji_jieshu_1.png','siji_jieshu_2.png','xuanshang_jvjue.png'))
 start_siji.grid(row=4, column=0, pady=10)
-
-# 打手
-start_dashou = tk.Button(root, text="魂土打手", command=partial(start_script, run_script, 'siji_tiaozhan.png','siji_jieshu_1.png','siji_jieshu_2.png','xuanshang_jvjue.png'))
-start_dashou.grid(row=4, column=1, pady=10)
 
 # 运行主循环
 root.mainloop()
