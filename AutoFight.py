@@ -115,7 +115,7 @@ def find_and_click_image(window_title, target_image_path, confidence=0.8):
             if max_val >= confidence:
                 pyautogui.moveTo(center_x + random_offset_x, center_y + random_offset_y)
                 pyautogui.click()
-                print(f"click,等待时间：{rd_time}秒")
+                # print(f"click,等待时间：{rd_time}秒")
                 return True
 
     return False
@@ -168,10 +168,11 @@ def run_script(start_image, end_image1, end_image2 , other_image):
             break
 
         if find_and_click_image(entry_window_title.get(), start):
-            print("点击挑战")
+            print("\n点击挑战")
             end_fail_number = 0
             start_fail_number += 1
             fight_number += 1
+            print("挑战次数:", fight_number)
             time.sleep(3)
 
         if not script_running:
@@ -180,7 +181,7 @@ def run_script(start_image, end_image1, end_image2 , other_image):
         if find_and_click_image(entry_window_title.get(), end1) or find_and_click_image(entry_window_title.get(), end2):
             start_fail_number = 0
             end_fail_number += 1
-            print("结束，挑战次数:", fight_number,"\n")
+            print("结束")
             time.sleep(1)
 
 def fight_end_num():
