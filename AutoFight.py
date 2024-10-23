@@ -222,55 +222,6 @@ def find_and_click_image_for_window(hwnd, target_image_path, confidence=0.8):
 
     return False
 
-# 双开
-def run_script_for_window(hwnd, start_image, end_image1, end_image2, other_image):
-    global fight_number, xuanshang_number, start_fail_number, end_fail_number, script_running
-
-    start = get_resource_path(os.path.join('resources', start_image))
-    end1 = get_resource_path(os.path.join('resources', end_image1))
-    end2 = get_resource_path(os.path.join('resources', end_image2))
-    other = get_resource_path(os.path.join('resources', other_image))
-    
-    while script_running:
-        fight_end_num()
-
-        if not script_running:
-            break
-
-        if find_and_click_image_for_window(hwnd, other):
-            xuanshang_number += 1
-            print("拒绝悬赏")
-            time.sleep(1)
-
-        if not script_running:
-            break
-
-        if find_and_click_image_for_window(hwnd, start):
-            print("点击挑战")
-            end_fail_number = 0
-            start_fail_number += 1
-            fight_number += 1
-            time.sleep(3)
-
-        if not script_running:
-            break
-
-        if find_and_click_image_for_window(hwnd, end1) or find_and_click_image_for_window(hwnd, end2):
-            start_fail_number = 0
-            end_fail_number += 1
-            print("结束，挑战次数:", fight_number)
-            time.sleep(1)
-
-# 双开
-def start_dual_script():
-    hwnds = find_windows_by_title("阴阳师-网易游戏")
-    if len(hwnds) < 2:
-        messagebox.showerror("错误", "未找到两个游戏窗口")
-        return
-
-    start_script(run_script_for_window, hwnds[0], 'yulin_tiaozhan.png', 'yulin_jieshu.png', 'huntu_jieshu_2000.png', 'xuanshang_jvjue.png')
-    start_script(run_script_for_window, hwnds[1], 'yulin_tiaozhan.png', 'yulin_jieshu.png', 'huntu_jieshu_2000.png', 'xuanshang_jvjue.png')
-
 def fight_end_num():
     global fight_number
     global start_fail_number
@@ -339,17 +290,9 @@ start_pata.grid(row=3, column=1, pady=10)
 start_guibing = tk.Button(root, text="鬼兵演武", command=partial(start_script, run_script, 'guibing_tiaozhan.png','guibing_jieshu.png','guibing_jieshu_2.png','xuanshang_jvjue.png'))
 start_guibing.grid(row=3, column=2, pady=10)
 
-# 司机
-start_siji = tk.Button(root, text="魂土司机", command=partial(start_script, run_script, 'siji_tiaozhan.png','siji_jieshu_1.png','siji_jieshu_2.png','xuanshang_jvjue.png'))
+# 创建魂土组队
+start_siji = tk.Button(root, text="魂土组队", command=partial(start_script, run_script, 'siji_tiaozhan.png','siji_jieshu_1.png','siji_jieshu_2.png','xuanshang_jvjue.png'))
 start_siji.grid(row=4, column=0, pady=10)
-
-# 打手
-start_dashou = tk.Button(root, text="魂土打手", command=partial(start_script, run_script, 'siji_tiaozhan.png','siji_jieshu_1.png','siji_jieshu_2.png','xuanshang_jvjue.png'))
-start_dashou.grid(row=4, column=1, pady=10)
-
-# 创建双开按钮
-start_dual = tk.Button(root, text="双开挑战", command=start_dual_script)
-start_dual.grid(row=4, column=2, pady=10)
 
 # 运行主循环
 root.mainloop()
