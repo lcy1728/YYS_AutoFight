@@ -233,7 +233,7 @@ start_huntu = tk.Button(root, text="单人魂土", command=partial(start_script,
 start_huntu.grid(row=3, column=1, pady=10)
 
 #创建爬塔按钮
-start_pata = tk.Button(root, text="爬塔挑战", command=partial(start_script, run_script, 'pata_tiaozhan.png','pata_jieshu.png','xuanshang_jvjue.png','huntu_jieshu_2000.png'))
+start_pata = tk.Button(root, text="活动挑战", command=partial(start_script, run_script, 'huodong_tiaozhan.png','huodong_jieshu_1.png','xuanshang_jvjue.png','huodong_jieshu_2.png'))
 start_pata.grid(row=3, column=2, pady=10)
 
 #创建爬塔按钮
