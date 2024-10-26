@@ -248,9 +248,13 @@ start_pata.grid(row=3, column=1, pady=10)
 start_guibing = tk.Button(root, text="鬼兵演武", command=partial(start_script, run_script, 'guibing_tiaozhan.png','guibing_jieshu.png','guibing_jieshu_2.png','xuanshang_jvjue.png'))
 start_guibing.grid(row=3, column=2, pady=10)
 
-# 创建魂土主队按钮
-start_siji = tk.Button(root, text="魂土组队", command=partial(start_script, run_script, 'siji_tiaozhan.png','siji_jieshu_1.png','siji_jieshu_2.png','xuanshang_jvjue.png'))
-start_siji.grid(row=4, column=0, pady=10)
+# 创建魂土组队按钮
+start_huntu = tk.Button(root, text="魂土组队", command=partial(start_script, run_script, 'siji_tiaozhan.png','siji_jieshu_1.png','siji_jieshu_2.png','xuanshang_jvjue.png'))
+start_huntu.grid(row=4, column=0, pady=10)
+
+# 创建魂王组队按钮
+start_hunwang = tk.Button(root, text="魂王组队", command=partial(start_script, run_script, 'siji_tiaozhan.png','hunwang_jieshu_1.png','hunwang_jieshu_2.png','xuanshang_jvjue.png'))
+start_hunwang.grid(row=4, column=1, pady=10)
 
 # 运行主循环
 root.mainloop()
