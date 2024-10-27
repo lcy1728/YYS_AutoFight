@@ -17,7 +17,8 @@ script_running = False
 fight_number = 0
 xuanshang_number = 0
 start_fail_number = 0
-end_fail_number = 0
+end_fail_number_2 = 0
+end_fail_number_1 = 0
 
 def center_window(root, width, height):
     # 获取屏幕宽度和高度
@@ -63,7 +64,7 @@ def is_color_similar(image1, image2, threshold=30):
     # 判断颜色差异是否在阈值范围内
     return color_diff < threshold
 
-def find_and_click_image(window_title, target_image_path, confidence=0.8):
+def find_and_click_image(window_title, target_image_path, confidence=0.95):
     hwnd = win32gui.FindWindow(None, window_title)
     if not hwnd:
         messagebox.showerror("错误", f"未找到窗口: {window_title}")
@@ -144,7 +145,8 @@ def run_script(start_image, end_image1, end_image2 , other_image):
     global fight_number
     global xuanshang_number
     global start_fail_number
-    global end_fail_number
+    global end_fail_number_2
+    global end_fail_number_1
     global script_running  # 确保在此函数中使用全局变量
 
     # 使用 get_resource_path 函数获取资源文件的完整路径
@@ -169,25 +171,34 @@ def run_script(start_image, end_image1, end_image2 , other_image):
 
         if find_and_click_image(entry_window_title.get(), start):
             print("\n点击挑战")
-            end_fail_number = 0
+            end_fail_number_1 = 0
+            end_fail_number_2 = 0
             start_fail_number += 1
             fight_number += 1
-            print("挑战次数:", fight_number)
+            print(f"挑战次数:{fight_number}")
             time.sleep(3)
 
         if not script_running:
             break
 
-        if find_and_click_image(entry_window_title.get(), end1) or find_and_click_image(entry_window_title.get(), end2):
+        if find_and_click_image(entry_window_title.get(), end1):
             start_fail_number = 0
-            end_fail_number += 1
-            print("结束")
+            end_fail_number_2 = 0
+            end_fail_number_1 += 1
+            print(f"结束页面1   点击次数：{end_fail_number_1}")
+            time.sleep(1)
+
+        if find_and_click_image(entry_window_title.get(), end2):
+            end_fail_number_1 = 0
+            end_fail_number_2 += 1
+            print(f"结束页面2   点击次数：{end_fail_number_2}")
             time.sleep(1)
 
 def fight_end_num():
     global fight_number
     global start_fail_number
-    global end_fail_number
+    global end_fail_number_1
+    global end_fail_number_2
 
     end_num =int(yuling_num.get())
     if not end_num:
@@ -197,7 +208,7 @@ def fight_end_num():
     if fight_number == end_num:
         stop_script()
 
-    if end_fail_number == 3 or start_fail_number == 3:
+    if end_fail_number_1 == 3 or start_fail_number == 3 or end_fail_number_2 == 3:
         stop_script()
         messagebox.showerror("错误","连续点击三次,脚本停止")
 
