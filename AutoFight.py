@@ -16,9 +16,12 @@ import sys
 script_running = False
 fight_number = 0
 xuanshang_number = 0
-start_fail_number = 0
+start_fail_number_1 = 0
+start_fail_number_2 = 0
 end_fail_number_2 = 0
 end_fail_number_1 = 0
+quit_fail_number_1 = 0
+quit_fail_number_2 = 0
 
 def center_window(root, width, height):
     # 获取屏幕宽度和高度
@@ -64,7 +67,7 @@ def is_color_similar(image1, image2, threshold=30):
     # 判断颜色差异是否在阈值范围内
     return color_diff < threshold
 
-def find_and_click_image(window_title, target_image_path, confidence=0.95):
+def find_and_click_image(window_title, target_image_path, confidence=0.9):
     hwnd = win32gui.FindWindow(None, window_title)
     if not hwnd:
         messagebox.showerror("错误", f"未找到窗口: {window_title}")
@@ -116,8 +119,94 @@ def find_and_click_image(window_title, target_image_path, confidence=0.95):
             if max_val >= confidence:
                 pyautogui.moveTo(center_x + random_offset_x, center_y + random_offset_y)
                 pyautogui.click()
-                # print(f"click,等待时间：{rd_time}秒")
                 return True
+    return False
+
+
+def find_and_move(window_title, target_image_path, confidence=0.9):
+    hwnd = win32gui.FindWindow(None, window_title)
+    if not hwnd:
+        messagebox.showerror("错误", f"未找到窗口: {window_title}")
+        return False
+    
+    rect = win32gui.GetWindowRect(hwnd)
+    screenshot = ImageGrab.grab(bbox=rect)
+    screenshot = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2BGR)
+
+    target_image = cv2.imread(target_image_path, cv2.IMREAD_COLOR)
+
+    if target_image is None:
+        messagebox.showerror("错误", f"无法加载目标图像: {target_image_path}")
+        return False
+
+    if screenshot.dtype != target_image.dtype:
+        messagebox.showerror("错误", "截图和目标图像的数据类型不匹配")
+        return False
+
+    result = cv2.matchTemplate(screenshot, target_image, cv2.TM_CCOEFF_NORMED)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+
+    if max_val >= confidence:
+        target_height, target_width = target_image.shape[:2]
+        bottom_right_x = max_loc[0] + target_width + rect[0]
+        bottom_right_y = max_loc[1] + target_height + rect[1]
+
+        # 提取匹配区域
+        matched_region = screenshot[max_loc[1]:max_loc[1]+target_height, max_loc[0]:max_loc[0]+target_width]
+
+        # 检查颜色相似度
+        if is_color_similar(matched_region, target_image):
+            rd_time = random.uniform(1, 2)
+            rd_move = random.randint(5, 10)
+
+            time.sleep(rd_time)
+            pyautogui.moveTo(bottom_right_x + rd_move, bottom_right_y + rd_move)
+
+            pyautogui.click()
+            return True
+
+    return False
+
+
+def find_and_quick_click(window_title, target_image_path, confidence=0.9):
+    hwnd = win32gui.FindWindow(None, window_title)
+    if not hwnd:
+        messagebox.showerror("错误", f"未找到窗口: {window_title}")
+        return False
+    
+    rect = win32gui.GetWindowRect(hwnd)
+    screenshot = ImageGrab.grab(bbox=rect)
+    screenshot = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2BGR)
+
+    target_image = cv2.imread(target_image_path, cv2.IMREAD_COLOR)
+
+    if target_image is None:
+        messagebox.showerror("错误", f"无法加载目标图像: {target_image_path}")
+        return False
+
+    if screenshot.dtype != target_image.dtype:
+        messagebox.showerror("错误", "截图和目标图像的数据类型不匹配")
+        return False
+
+    result = cv2.matchTemplate(screenshot, target_image, cv2.TM_CCOEFF_NORMED)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+
+    if max_val >= confidence:
+        target_height, target_width = target_image.shape[:2]
+        center_x = max_loc[0] + target_width // 2 + rect[0]
+        center_y = max_loc[1] + target_height // 2 + rect[1]
+        
+
+        # 提取匹配区域
+        matched_region = screenshot[max_loc[1]:max_loc[1]+target_height, max_loc[0]:max_loc[0]+target_width]
+
+        # 检查颜色相似度
+        if is_color_similar(matched_region, target_image):
+            random_offset_x = random.randint(-target_width // 4, target_width // 4)
+            random_offset_y = random.randint(-target_height // 4, target_height // 4)
+            pyautogui.moveTo(center_x + random_offset_x, center_y + random_offset_y)
+            pyautogui.click()
+            return True
 
     return False
 
@@ -144,7 +233,7 @@ def start_script(target_function, *args, **kwargs):
 def run_script(start_image, end_image1, end_image2 , other_image):
     global fight_number
     global xuanshang_number
-    global start_fail_number
+    global start_fail_number_1
     global end_fail_number_2
     global end_fail_number_1
     global script_running  # 确保在此函数中使用全局变量
@@ -173,7 +262,7 @@ def run_script(start_image, end_image1, end_image2 , other_image):
             print("\n点击挑战")
             end_fail_number_1 = 0
             end_fail_number_2 = 0
-            start_fail_number += 1
+            start_fail_number_1 += 1
             fight_number += 1
             print(f"挑战次数:{fight_number}")
             time.sleep(3)
@@ -182,7 +271,7 @@ def run_script(start_image, end_image1, end_image2 , other_image):
             break
 
         if find_and_click_image(entry_window_title.get(), end1):
-            start_fail_number = 0
+            start_fail_number_1 = 0
             end_fail_number_2 = 0
             end_fail_number_1 += 1
             print(f"结束页面1   点击次数：{end_fail_number_1}")
@@ -194,11 +283,78 @@ def run_script(start_image, end_image1, end_image2 , other_image):
             print(f"结束页面2   点击次数：{end_fail_number_2}")
             time.sleep(1)
 
+def run_28_script(start_image1,start_image2,move_image,end_image1,quit1_image1,quit2_image1,other_image):
+    global fight_number
+    global xuanshang_number
+    global start_fail_number_1
+    global start_fail_number_2
+    global end_fail_number_1
+    global quit_fail_number_1
+    global quit_fail_number_2
+    global script_running  # 确保在此函数中使用全局变量 
+
+    # 使用 get_resource_path 函数获取资源文件的完整路径
+    start1 = get_resource_path(os.path.join('resources', start_image1))
+    start2 = get_resource_path(os.path.join('resources', start_image2))
+    move = get_resource_path(os.path.join('resources', move_image))
+    end1 = get_resource_path(os.path.join('resources', end_image1))
+    quit1 = get_resource_path(os.path.join('resources', quit1_image1))
+    quit2 = get_resource_path(os.path.join('resources', quit2_image1))
+    other = get_resource_path(os.path.join('resources', other_image))
+
+    while script_running:  # 检查 script_running 的状态
+        fight_end_num()
+        
+        if not script_running:  # 如果 script_running 被设置为 False，立即退出循环
+            break
+
+        if find_and_click_image(entry_window_title.get(), other):
+            xuanshang_number += 1
+            print("拒绝悬赏")
+
+        if find_and_click_image(entry_window_title.get(),start1):
+            print("\n开始探索")
+            start_fail_number_1 += 1
+            time.sleep(3)
+            if find_and_move(entry_window_title.get(), move):
+                start_fail_number_1 = 0
+                print("点击移动")
+                time.sleep(5)
+
+        if find_and_quick_click(entry_window_title.get(), start2):
+            start_fail_number_1 = 0
+            end_fail_number_1 = 0
+            start_fail_number_2 += 1
+            fight_number += 1
+            print(f"\n挑战,挑战次数:{fight_number}")
+            time.sleep(1)
+
+        if find_and_click_image(entry_window_title.get(), end1):
+            print("结束")
+            start_fail_number_2 = 0
+            end_fail_number_1 += 1
+            time.sleep(3)
+            if not find_and_quick_click(entry_window_title.get(), start2):
+                if find_and_click_image(entry_window_title.get(), quit1):
+                    end_fail_number_1 = 0
+                    quit_fail_number_1 += 1
+                    print("无怪物,点击退出")
+                    time.sleep(1)
+                    if find_and_click_image(entry_window_title.get(), quit2):
+                        quit_fail_number_2 += 1
+                        print("退出")
+                        time.sleep(3)
+
+
 def fight_end_num():
     global fight_number
-    global start_fail_number
+    global xuanshang_number
+    global start_fail_number_1
+    global start_fail_number_2
     global end_fail_number_1
     global end_fail_number_2
+    global quit_fail_number_1
+    global quit_fail_number_2
 
     end_num =int(yuling_num.get())
     if not end_num:
@@ -208,7 +364,7 @@ def fight_end_num():
     if fight_number == end_num:
         stop_script()
 
-    if end_fail_number_1 == 3 or start_fail_number == 3 or end_fail_number_2 == 3:
+    if xuanshang_number == 5 or start_fail_number_1 == 3 or start_fail_number_2 == 3 or end_fail_number_1 == 3 or end_fail_number_2 == 3 or quit_fail_number_1 == 3 or quit_fail_number_2 == 3:
         stop_script()
         messagebox.showerror("错误","连续点击三次,脚本停止")
 
@@ -266,6 +422,10 @@ start_huntu.grid(row=4, column=0, pady=10)
 # 创建魂王组队按钮
 start_hunwang = tk.Button(root, text="魂王组队", command=partial(start_script, run_script, 'siji_tiaozhan.png','hunwang_jieshu_1.png','hunwang_jieshu_2.png','xuanshang_jvjue.png'))
 start_hunwang.grid(row=4, column=1, pady=10)
+
+# 困难28按钮
+start_28 = tk.Button(root, text="困难28",command=partial(start_script, run_28_script,'tansuo_tansuo.png','tansuo_start.png','tansuo_yidong.png','tansuo_jieshu.png','tansuo_tuichu_1.png','tansuo_tuichu_2.png','xuanshang_jvjue.png'))
+start_28.grid(row=4, column=2, pady=10)
 
 # 运行主循环
 root.mainloop()
