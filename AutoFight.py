@@ -409,7 +409,16 @@ def run_28_script(start_28_image, start_image1, start_image2, start_bosses_image
             xuanshang_number += 1
             print("拒绝悬赏")
 
-        if find_and_click_image(entry_window_title.get(), start1) and not find_and_not_click(entry_window_title.get(), big_daoxiang):
+        if find_and_click_image(entry_window_title.get(), big_daoxiang):
+            print("点击大宝箱")
+            big_baoxiang_fail_number += 1
+            time.sleep(3)
+            if find_and_click_image(entry_window_title.get(), quit1):
+                jiesuan_fail_number += 1
+                big_baoxiang_fail_number = 0
+                print('获取大宝箱')
+
+        if find_and_click_image(entry_window_title.get(), start1) :
             print("\n开始探索")
             quit_fail_number_2 = 0
             tansuo_28_fail_number = 0
@@ -465,21 +474,12 @@ def run_28_script(start_28_image, start_image1, start_image2, start_bosses_image
                 print("获得奖励")
                 time.sleep(1)
                 
-        if find_and_click_image(entry_window_title.get(), start_28):
+        if find_and_click_image(entry_window_title.get(), start_28) and not find_and_not_click(entry_window_title.get(), big_daoxiang):
             tansuo_28_fail_number += 1
             end_fail_number_1 = 0
             jiesuan_fail_number = 0
             print('第28章')
             time.sleep(1)
-
-        if find_and_click_image(entry_window_title.get(), big_daoxiang):
-            print("点击大宝箱")
-            big_baoxiang_fail_number += 1
-            time.sleep(5)
-            if find_and_click_image(entry_window_title.get(), quit1):
-                jiesuan_fail_number += 1
-                big_baoxiang_fail_number = 0
-                print('获取大宝箱')
 
 def fight_end_num():
     global fight_number
