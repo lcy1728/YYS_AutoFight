@@ -458,7 +458,8 @@ def run_28_script(start_28_image, start_image1, start_image2, start_bosses_image
             baoxiang_fail_number += 1
             jiesuan_fail_number = 0
             print("获取宝箱")
-            time.sleep(3)
+            time.sleep(2)
+
             if find_and_click_lefttop(entry_window_title.get(), boss_jiesuan):
                 baoxiang_fail_number = 0
                 jiesuan_fail_number += 1
