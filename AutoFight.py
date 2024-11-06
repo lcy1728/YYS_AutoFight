@@ -352,6 +352,7 @@ def run_28_script(start_image1,start_image2,move_image,end_image1,quit1_image1,q
 
         if find_and_click_image(entry_window_title.get(),start1):
             print("\n开始探索")
+            quit_fail_number_2 = 0
             start_fail_number_1 += 1
             time.sleep(3)
             if find_and_move(entry_window_title.get(), move):
@@ -361,7 +362,6 @@ def run_28_script(start_image1,start_image2,move_image,end_image1,quit1_image1,q
                 time.sleep(rd_time)
 
                 if find_and_move(entry_window_title.get(), move):
-                    start_fail_number_1 = 0
                     print("点击移动")
                     time.sleep(rd_time)
 
@@ -386,6 +386,7 @@ def run_28_script(start_image1,start_image2,move_image,end_image1,quit1_image1,q
                     print("无怪物,点击退出")
                     time.sleep(1)
                     if find_and_click_image(entry_window_title.get(), quit2):
+                        quit_fail_number_1 = 0
                         quit_fail_number_2 += 1
                         print("退出")
                         time.sleep(rd_time)
