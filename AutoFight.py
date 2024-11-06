@@ -334,6 +334,15 @@ def run_28_script(start_image1,start_image2,move_image,end_image1,quit1_image1,q
             start_fail_number_2 = 0
             end_fail_number_1 += 1
             time.sleep(3)
+
+            if find_and_quick_click(entry_window_title.get(), start2):
+                start_fail_number_1 = 0
+                end_fail_number_1 = 0
+                start_fail_number_2 += 1
+                fight_number += 1
+                print(f"\n挑战,挑战次数:{fight_number}")
+                time.sleep(1)
+
             if not find_and_quick_click(entry_window_title.get(), start2):
                 if find_and_click_image(entry_window_title.get(), quit1):
                     end_fail_number_1 = 0
