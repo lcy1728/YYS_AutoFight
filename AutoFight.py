@@ -335,6 +335,10 @@ def run_28_script(start_image1,start_image2,move_image,end_image1,quit1_image1,q
             end_fail_number_1 += 1
             time.sleep(3)
 
+            if find_and_click_image(entry_window_title.get(), other):
+                xuanshang_number += 1
+                print("拒绝悬赏")
+
             if find_and_quick_click(entry_window_title.get(), start2):
                 start_fail_number_1 = 0
                 end_fail_number_1 = 0
@@ -357,7 +361,6 @@ def run_28_script(start_image1,start_image2,move_image,end_image1,quit1_image1,q
 
 def fight_end_num():
     global fight_number
-    global xuanshang_number
     global start_fail_number_1
     global start_fail_number_2
     global end_fail_number_1
@@ -373,7 +376,7 @@ def fight_end_num():
     if fight_number == end_num:
         stop_script()
 
-    if xuanshang_number == 5 or start_fail_number_1 == 3 or start_fail_number_2 == 3 or end_fail_number_1 == 3 or end_fail_number_2 == 3 or quit_fail_number_1 == 3 or quit_fail_number_2 == 3:
+    if start_fail_number_1 == 3 or start_fail_number_2 == 3 or end_fail_number_1 == 3 or end_fail_number_2 == 3 or quit_fail_number_1 == 3 or quit_fail_number_2 == 3:
         stop_script()
         messagebox.showerror("错误","连续点击三次,脚本停止")
 
