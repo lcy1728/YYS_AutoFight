@@ -210,6 +210,44 @@ def find_and_quick_click(window_title, target_image_path, confidence=0.9):
 
     return False
 
+def find_and_not_click(window_title, target_image_path, confidence=0.9):
+    hwnd = win32gui.FindWindow(None, window_title)
+    if not hwnd:
+        messagebox.showerror("错误", f"未找到窗口: {window_title}")
+        return False
+    
+    rect = win32gui.GetWindowRect(hwnd)
+    screenshot = ImageGrab.grab(bbox=rect)
+    screenshot = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2BGR)
+
+    target_image = cv2.imread(target_image_path, cv2.IMREAD_COLOR)
+
+    if target_image is None:
+        messagebox.showerror("错误", f"无法加载目标图像: {target_image_path}")
+        return False
+
+    if screenshot.dtype != target_image.dtype:
+        messagebox.showerror("错误", "截图和目标图像的数据类型不匹配")
+        return False
+
+    result = cv2.matchTemplate(screenshot, target_image, cv2.TM_CCOEFF_NORMED)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+
+    if max_val >= confidence:
+        target_height, target_width = target_image.shape[:2]
+        center_x = max_loc[0] + target_width // 2 + rect[0]
+        center_y = max_loc[1] + target_height // 2 + rect[1]
+        
+
+        # 提取匹配区域
+        matched_region = screenshot[max_loc[1]:max_loc[1]+target_height, max_loc[0]:max_loc[0]+target_width]
+
+        # 检查颜色相似度
+        if is_color_similar(matched_region, target_image):
+            return True
+
+    return False
+
 def find_game_window():
     client_window_title = entry_window_title.get()
 
@@ -335,19 +373,7 @@ def run_28_script(start_image1,start_image2,move_image,end_image1,quit1_image1,q
             end_fail_number_1 += 1
             time.sleep(3)
 
-            if find_and_click_image(entry_window_title.get(), other):
-                xuanshang_number += 1
-                print("拒绝悬赏")
-
-            if find_and_quick_click(entry_window_title.get(), start2):
-                start_fail_number_1 = 0
-                end_fail_number_1 = 0
-                start_fail_number_2 += 1
-                fight_number += 1
-                print(f"\n挑战,挑战次数:{fight_number}")
-                time.sleep(1)
-
-            if not find_and_quick_click(entry_window_title.get(), start2):
+            if not find_and_not_click(entry_window_title.get(), start2):
                 if find_and_click_image(entry_window_title.get(), quit1):
                     end_fail_number_1 = 0
                     quit_fail_number_1 += 1
