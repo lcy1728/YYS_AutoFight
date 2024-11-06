@@ -357,7 +357,13 @@ def run_28_script(start_image1,start_image2,move_image,end_image1,quit1_image1,q
             if find_and_move(entry_window_title.get(), move):
                 start_fail_number_1 = 0
                 print("点击移动")
-                time.sleep(5)
+                rd_time = random.uniform(3, 5)
+                time.sleep(rd_time)
+
+                if find_and_move(entry_window_title.get(), move):
+                    start_fail_number_1 = 0
+                    print("点击移动")
+                    time.sleep(rd_time)
 
         if find_and_quick_click(entry_window_title.get(), start2):
             start_fail_number_1 = 0
@@ -371,7 +377,7 @@ def run_28_script(start_image1,start_image2,move_image,end_image1,quit1_image1,q
             print("结束")
             start_fail_number_2 = 0
             end_fail_number_1 += 1
-            time.sleep(3)
+            time.sleep(rd_time)
 
             if not find_and_not_click(entry_window_title.get(), start2):
                 if find_and_click_image(entry_window_title.get(), quit1):
@@ -382,7 +388,7 @@ def run_28_script(start_image1,start_image2,move_image,end_image1,quit1_image1,q
                     if find_and_click_image(entry_window_title.get(), quit2):
                         quit_fail_number_2 += 1
                         print("退出")
-                        time.sleep(3)
+                        time.sleep(rd_time)
 
 
 def fight_end_num():
