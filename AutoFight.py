@@ -474,7 +474,7 @@ def run_28_script(start_28_image, start_image1, start_image2, start_bosses_image
                 print("获得奖励")
                 time.sleep(1)
                 
-        if find_and_click_image(entry_window_title.get(), start_28) and not find_and_not_click(entry_window_title.get(), big_daoxiang):
+        if not find_and_not_click(entry_window_title.get(), big_daoxiang) and find_and_click_image(entry_window_title.get(), start_28):
             tansuo_28_fail_number += 1
             end_fail_number_1 = 0
             jiesuan_fail_number = 0
