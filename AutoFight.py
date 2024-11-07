@@ -12,6 +12,10 @@ import random
 import threading
 from functools import partial
 import sys
+import time
+
+# 关闭 pyautogui 的 fail-safe 机制
+pyautogui.FAILSAFE = False
 
 script_running = False
 fight_number = 0
@@ -26,6 +30,7 @@ baoxiang_fail_number = 0
 jiesuan_fail_number = 0
 tansuo_28_fail_number = 0
 big_baoxiang_fail_number = 0
+start_time = None
 
 def center_window(root, width, height):
     # 获取屏幕宽度和高度
@@ -309,10 +314,11 @@ def find_game_window():
         messagebox.showerror("错误", f"未找到窗口: {client_window_title}")
 
 def start_script(target_function, *args, **kwargs):
-    global script_running
+    global script_running, start_time
     if script_running:
         return
     script_running = True
+    start_time = time.time()  # Record the start time
     script_thread = threading.Thread(target=target_function, args=args, kwargs=kwargs)
     script_thread.start()
 
@@ -508,10 +514,11 @@ def fight_end_num():
 
 
 def stop_script():
-    global script_running
-    global fight_number
+    global script_running, fight_number, start_time
     script_running = False
-    messagebox.showinfo("挑战结束", f"挑战次数: {fight_number}\n拒绝悬赏次数: {xuanshang_number}")
+    elapsed_time = (time.time() - start_time) / 60
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    messagebox.showinfo("挑战结束", f"挑战次数: {fight_number}\n拒绝悬赏次数: {xuanshang_number}\n运行时间: {elapsed_time:.2f} 分钟\n结束时间: {current_time}")
     fight_number = 0
 
 # 创建主窗口
