@@ -76,7 +76,7 @@ def is_color_similar(image1, image2, threshold=30):
     # 判断颜色差异是否在阈值范围内
     return color_diff < threshold
 
-def find_and_click_image(window_title, target_image_path, confidence=0.9):
+def find_and_click_image(window_title, target_image_path, confidence=0.85):
     hwnd = win32gui.FindWindow(None, window_title)
     if not hwnd:
         messagebox.showerror("错误", f"未找到窗口: {window_title}")
@@ -132,7 +132,7 @@ def find_and_click_image(window_title, target_image_path, confidence=0.9):
     return False
 
 
-def find_and_click_rightbottom(window_title, target_image_path, confidence=0.9):
+def find_and_click_rightbottom(window_title, target_image_path, confidence=0.85):
     hwnd = win32gui.FindWindow(None, window_title)
     if not hwnd:
         messagebox.showerror("错误", f"未找到窗口: {window_title}")
@@ -176,7 +176,7 @@ def find_and_click_rightbottom(window_title, target_image_path, confidence=0.9):
 
     return False
 
-def find_and_click_lefttop(window_title, target_image_path, confidence=0.9):
+def find_and_click_lefttop(window_title, target_image_path, confidence=0.85):
     hwnd = win32gui.FindWindow(None, window_title)
     if not hwnd:
         messagebox.showerror("错误", f"未找到窗口: {window_title}")
@@ -221,7 +221,7 @@ def find_and_click_lefttop(window_title, target_image_path, confidence=0.9):
     return False
 
 
-def find_and_quick_click(window_title, target_image_path, confidence=0.9):
+def find_and_quick_click(window_title, target_image_path, confidence=0.85):
     hwnd = win32gui.FindWindow(None, window_title)
     if not hwnd:
         messagebox.showerror("错误", f"未找到窗口: {window_title}")
@@ -263,7 +263,7 @@ def find_and_quick_click(window_title, target_image_path, confidence=0.9):
 
     return False
 
-def find_and_not_click(window_title, target_image_path, confidence=0.9):
+def find_and_not_click(window_title, target_image_path, confidence=0.85):
     hwnd = win32gui.FindWindow(None, window_title)
     if not hwnd:
         messagebox.showerror("错误", f"未找到窗口: {window_title}")
