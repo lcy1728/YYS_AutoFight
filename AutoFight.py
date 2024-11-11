@@ -418,9 +418,10 @@ def run_28_script(start_28_image, start_image1, start_image2, start_bosses_image
         if find_and_click_image(entry_window_title.get(), big_daoxiang):
             print("点击大宝箱")
             big_baoxiang_fail_number += 1
+            end_fail_number_1 = 0
             time.sleep(3)
-            if find_and_click_image(entry_window_title.get(), quit1):
-                jiesuan_fail_number += 1
+            if find_and_click_image(entry_window_title.get(), end1):
+                end_fail_number_1 += 1
                 big_baoxiang_fail_number = 0
                 print('获取大宝箱')
 
@@ -452,6 +453,7 @@ def run_28_script(start_28_image, start_image1, start_image2, start_bosses_image
         if find_and_click_image(entry_window_title.get(), end1):
             print("结束")
             start_fail_number_2 = 0
+            big_baoxiang_fail_number = 0
             end_fail_number_1 += 1
             time.sleep(rd_time)
 
@@ -472,6 +474,7 @@ def run_28_script(start_28_image, start_image1, start_image2, start_bosses_image
         if find_and_click_image(entry_window_title.get(), boss_baoxiang):
             baoxiang_fail_number += 1
             jiesuan_fail_number = 0
+            end_fail_number_1 = 0
             print("点击宝箱")
             time.sleep(3)
             if find_and_click_lefttop(entry_window_title.get(), boss_jiesuan):
