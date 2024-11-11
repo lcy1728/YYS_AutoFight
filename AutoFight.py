@@ -76,7 +76,7 @@ def is_color_similar(image1, image2, threshold=30):
     # 判断颜色差异是否在阈值范围内
     return color_diff < threshold
 
-def find_and_click_image(window_title, target_image_path, confidence=0.85):
+def find_and_click_image(window_title, target_image_path, confidence=0.9):
     hwnd = win32gui.FindWindow(None, window_title)
     if not hwnd:
         messagebox.showerror("错误", f"未找到窗口: {window_title}")
@@ -132,7 +132,7 @@ def find_and_click_image(window_title, target_image_path, confidence=0.85):
     return False
 
 
-def find_and_click_rightbottom(window_title, target_image_path, confidence=0.85):
+def find_and_click_rightbottom(window_title, target_image_path, confidence=0.9):
     hwnd = win32gui.FindWindow(None, window_title)
     if not hwnd:
         messagebox.showerror("错误", f"未找到窗口: {window_title}")
@@ -176,7 +176,7 @@ def find_and_click_rightbottom(window_title, target_image_path, confidence=0.85)
 
     return False
 
-def find_and_click_lefttop(window_title, target_image_path, confidence=0.85):
+def find_and_click_lefttop(window_title, target_image_path, confidence=0.9):
     hwnd = win32gui.FindWindow(None, window_title)
     if not hwnd:
         messagebox.showerror("错误", f"未找到窗口: {window_title}")
@@ -221,7 +221,7 @@ def find_and_click_lefttop(window_title, target_image_path, confidence=0.85):
     return False
 
 
-def find_and_quick_click(window_title, target_image_path, confidence=0.85):
+def find_and_quick_click(window_title, target_image_path, confidence=0.9):
     hwnd = win32gui.FindWindow(None, window_title)
     if not hwnd:
         messagebox.showerror("错误", f"未找到窗口: {window_title}")
@@ -263,7 +263,7 @@ def find_and_quick_click(window_title, target_image_path, confidence=0.85):
 
     return False
 
-def find_and_not_click(window_title, target_image_path, confidence=0.85):
+def find_and_not_click(window_title, target_image_path, confidence=0.9):
     hwnd = win32gui.FindWindow(None, window_title)
     if not hwnd:
         messagebox.showerror("错误", f"未找到窗口: {window_title}")
@@ -417,12 +417,12 @@ def run_28_script(start_28_image, start_image1, start_image2, start_bosses_image
 
         if find_and_click_image(entry_window_title.get(), big_daoxiang):
             print("点击大宝箱")
-            big_baoxiang_fail_number += 1
             end_fail_number_1 = 0
+            big_baoxiang_fail_number += 1
             time.sleep(3)
             if find_and_click_image(entry_window_title.get(), end1):
-                end_fail_number_1 += 1
                 big_baoxiang_fail_number = 0
+                end_fail_number_1 += 1
                 print('获取大宝箱')
 
         if find_and_click_image(entry_window_title.get(), start1) :
@@ -430,6 +430,11 @@ def run_28_script(start_28_image, start_image1, start_image2, start_bosses_image
             quit_fail_number_2 = 0
             tansuo_28_fail_number = 0
             baoxiang_fail_number = 0
+            end_fail_number_1 = 0
+            jiesuan_fail_number = 0
+            quit_fail_number_1 = 0
+            big_baoxiang_fail_number = 0
+            start_fail_number_2 = 0
             start_fail_number_1 += 1
             time.sleep(3)
             if find_and_click_rightbottom(entry_window_title.get(), move):
@@ -472,9 +477,9 @@ def run_28_script(start_28_image, start_image1, start_image2, start_bosses_image
                             time.sleep(rd_time)
 
         if find_and_click_image(entry_window_title.get(), boss_baoxiang):
-            baoxiang_fail_number += 1
             jiesuan_fail_number = 0
             end_fail_number_1 = 0
+            baoxiang_fail_number += 1
             print("点击宝箱")
             time.sleep(3)
             if find_and_click_lefttop(entry_window_title.get(), boss_jiesuan):
@@ -484,9 +489,10 @@ def run_28_script(start_28_image, start_image1, start_image2, start_bosses_image
                 time.sleep(1)
                 
         if not find_and_not_click(entry_window_title.get(), big_daoxiang) and find_and_click_image(entry_window_title.get(), start_28):
-            tansuo_28_fail_number += 1
             end_fail_number_1 = 0
             jiesuan_fail_number = 0
+            baoxiang_fail_number = 0
+            tansuo_28_fail_number += 1
             print('第28章')
             time.sleep(1)
 
