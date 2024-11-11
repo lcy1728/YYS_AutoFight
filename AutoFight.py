@@ -520,14 +520,26 @@ def fight_end_num():
     if big_baoxiang_fail_number == 3 or start_fail_number_1 == 3 or start_fail_number_2 == 3 or end_fail_number_1 == 3 or end_fail_number_2 == 3 or quit_fail_number_1 == 3 or quit_fail_number_2 == 3 or tansuo_28_fail_number == 3 or baoxiang_fail_number == 3 or jiesuan_fail_number == 3:
         stop_script()
         messagebox.showerror("错误","连续点击三次,脚本停止")
+        start_fail_number_1 = 0
+        start_fail_number_2 = 0
+        end_fail_number_1 = 0
+        end_fail_number_2 = 0
+        quit_fail_number_1 = 0
+        quit_fail_number_2 = 0
+        tansuo_28_fail_number = 0
+        baoxiang_fail_number = 0
+        jiesuan_fail_number = 0
+        big_baoxiang_fail_number = 0
 
 
 def stop_script():
     global script_running, fight_number, start_time
     script_running = False
-    elapsed_time = (time.time() - start_time) / 60
+    elapsed_time = time.time() - start_time
+    hours, remainder = divmod(elapsed_time, 3600)
+    minutes, seconds = divmod(remainder, 60)
     current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-    messagebox.showinfo("挑战结束", f"挑战次数: {fight_number}\n拒绝悬赏次数: {xuanshang_number}\n运行时间: {elapsed_time:.2f} 分钟\n结束时间: {current_time}")
+    messagebox.showinfo("挑战结束", f"挑战次数: {fight_number}\n拒绝悬赏次数: {xuanshang_number}\n运行时间: {int(hours)}小时 {int(minutes)}分钟 {int(seconds)}秒\n结束时间: {current_time}")
     fight_number = 0
 
 # 创建主窗口
