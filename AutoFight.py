@@ -370,6 +370,7 @@ def run_script(start_image, end_image1, end_image2 , other_image):
             time.sleep(1)
 
         if find_and_click_image(entry_window_title.get(), end2):
+            start_fail_number_1 = 0
             end_fail_number_1 = 0
             end_fail_number_2 += 1
             print(f"结束页面2   点击次数：{end_fail_number_2}")
@@ -417,11 +418,12 @@ def run_28_script(start_28_image, start_image1, start_image2, start_bosses_image
 
         if find_and_click_image(entry_window_title.get(), big_daoxiang):
             print("点击大宝箱")
+            end_fail_number_1 = 0
             big_baoxiang_fail_number += 1
             time.sleep(3)
-            if find_and_click_image(entry_window_title.get(), quit1):
-                jiesuan_fail_number += 1
+            if find_and_click_image(entry_window_title.get(), end1):
                 big_baoxiang_fail_number = 0
+                end_fail_number_1 += 1
                 print('获取大宝箱')
 
         if find_and_click_image(entry_window_title.get(), start1) :
@@ -429,6 +431,11 @@ def run_28_script(start_28_image, start_image1, start_image2, start_bosses_image
             quit_fail_number_2 = 0
             tansuo_28_fail_number = 0
             baoxiang_fail_number = 0
+            end_fail_number_1 = 0
+            jiesuan_fail_number = 0
+            quit_fail_number_1 = 0
+            big_baoxiang_fail_number = 0
+            start_fail_number_2 = 0
             start_fail_number_1 += 1
             time.sleep(3)
             if find_and_click_rightbottom(entry_window_title.get(), move):
@@ -452,6 +459,7 @@ def run_28_script(start_28_image, start_image1, start_image2, start_bosses_image
         if find_and_click_image(entry_window_title.get(), end1):
             print("结束")
             start_fail_number_2 = 0
+            big_baoxiang_fail_number = 0
             end_fail_number_1 += 1
             time.sleep(rd_time)
 
@@ -470,8 +478,9 @@ def run_28_script(start_28_image, start_image1, start_image2, start_bosses_image
                             time.sleep(rd_time)
 
         if find_and_click_image(entry_window_title.get(), boss_baoxiang):
-            baoxiang_fail_number += 1
             jiesuan_fail_number = 0
+            end_fail_number_1 = 0
+            baoxiang_fail_number += 1
             print("点击宝箱")
             time.sleep(3)
             if find_and_click_lefttop(entry_window_title.get(), boss_jiesuan):
@@ -481,9 +490,10 @@ def run_28_script(start_28_image, start_image1, start_image2, start_bosses_image
                 time.sleep(1)
                 
         if not find_and_not_click(entry_window_title.get(), big_daoxiang) and find_and_click_image(entry_window_title.get(), start_28):
-            tansuo_28_fail_number += 1
             end_fail_number_1 = 0
             jiesuan_fail_number = 0
+            baoxiang_fail_number = 0
+            tansuo_28_fail_number += 1
             print('第28章')
             time.sleep(1)
 
@@ -511,14 +521,26 @@ def fight_end_num():
     if big_baoxiang_fail_number == 3 or start_fail_number_1 == 3 or start_fail_number_2 == 3 or end_fail_number_1 == 3 or end_fail_number_2 == 3 or quit_fail_number_1 == 3 or quit_fail_number_2 == 3 or tansuo_28_fail_number == 3 or baoxiang_fail_number == 3 or jiesuan_fail_number == 3:
         stop_script()
         messagebox.showerror("错误","连续点击三次,脚本停止")
+        start_fail_number_1 = 0
+        start_fail_number_2 = 0
+        end_fail_number_1 = 0
+        end_fail_number_2 = 0
+        quit_fail_number_1 = 0
+        quit_fail_number_2 = 0
+        tansuo_28_fail_number = 0
+        baoxiang_fail_number = 0
+        jiesuan_fail_number = 0
+        big_baoxiang_fail_number = 0
 
 
 def stop_script():
     global script_running, fight_number, start_time
     script_running = False
-    elapsed_time = (time.time() - start_time) / 60
+    elapsed_time = time.time() - start_time
+    hours, remainder = divmod(elapsed_time, 3600)
+    minutes, seconds = divmod(remainder, 60)
     current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-    messagebox.showinfo("挑战结束", f"挑战次数: {fight_number}\n拒绝悬赏次数: {xuanshang_number}\n运行时间: {elapsed_time:.2f} 分钟\n结束时间: {current_time}")
+    messagebox.showinfo("挑战结束", f"挑战次数: {fight_number}\n拒绝悬赏次数: {xuanshang_number}\n运行时间: {int(hours)}小时 {int(minutes)}分钟 {int(seconds)}秒\n结束时间: {current_time}")
     fight_number = 0
 
 # 创建主窗口
