@@ -432,7 +432,7 @@ def run_chaoguiwang_script(start_image1,start_image2, start_image3, end_image1 ,
         if find_and_click_image(entry_window_title.get(), end1):
             start_fail_number_1 = 0
             end_fail_number_1 += 1
-            print(f"结束  挑战次数:{fight_number}")
+            print(f"结束")
             time.sleep(1)
 
 
