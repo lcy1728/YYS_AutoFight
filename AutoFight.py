@@ -17,20 +17,30 @@ import time
 # 关闭 pyautogui 的 fail-safe 机制
 pyautogui.FAILSAFE = False
 
-script_running = False
-fight_number = 0
-xuanshang_number = 0
-start_fail_number_1 = 0
-start_fail_number_2 = 0
-end_fail_number_2 = 0
-end_fail_number_1 = 0
-quit_fail_number_1 = 0
-quit_fail_number_2 = 0
-baoxiang_fail_number = 0
-jiesuan_fail_number = 0
-tansuo_28_fail_number = 0
-big_baoxiang_fail_number = 0
-start_time = None
+class ScriptState:
+    def __init__(self):
+        self.script_running = False
+        self.start_time = time.time()
+        self.script_running  = False 
+        self.fight_number  = 0 
+        self.xuanshang_number  = 0 
+        self.start_fail_number_1  = 0 
+        self.start_fail_number_2  = 0 
+        self.end_fail_number_1  = 0 
+        self.end_fail_number_2  = 0 
+        self.quit_fail_number_1 = 0
+        self.quit_fail_number_2 = 0
+        self.baoxiang_fail_number = 0
+        self.jiesuan_fail_number = 0
+        self.tansuo_28_fail_number = 0
+        self.big_baoxiang_fail_number = 0
+        self.start_time = None
+
+    def reset(self):
+        self.__init__()
+
+    # 创建全局唯一的状态管理实例 
+script_state = ScriptState()  # 使用之前定义的ScriptState类 
 
 def center_window(root, width, height):
     # 获取屏幕宽度和高度
@@ -43,9 +53,7 @@ def center_window(root, width, height):
     root.geometry(f'{width}x{height}+{x}+{y}')
 
 def get_resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
     if hasattr(sys, '_MEIPASS'):
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
         base_path = sys._MEIPASS
     else:
         base_path = os.path.abspath(".")
@@ -130,7 +138,6 @@ def find_and_click_image(window_title, target_image_path, confidence=0.85):
                 pyautogui.click()
                 return True
     return False
-
 
 def find_and_click_rightbottom(window_title, target_image_path, confidence=0.85):
     hwnd = win32gui.FindWindow(None, window_title)
@@ -219,7 +226,6 @@ def find_and_click_lefttop(window_title, target_image_path, confidence=0.85):
             return True
 
     return False
-
 
 def find_and_quick_click(window_title, target_image_path, confidence=0.85):
     hwnd = win32gui.FindWindow(None, window_title)
@@ -314,7 +320,6 @@ def find_game_window():
         messagebox.showerror("错误", f"未找到窗口: {client_window_title}")
 
 def start_script(target_function, *args, **kwargs):
-    global script_running, start_time
     if script_running:
         return
     script_running = True
@@ -323,12 +328,6 @@ def start_script(target_function, *args, **kwargs):
     script_thread.start()
 
 def run_script(start_image, end_image1, end_image2 , other_image):
-    global fight_number
-    global xuanshang_number
-    global start_fail_number_1
-    global end_fail_number_2
-    global end_fail_number_1
-    global script_running  # 确保在此函数中使用全局变量
 
     # 使用 get_resource_path 函数获取资源文件的完整路径
     start = get_resource_path(os.path.join('resources', start_image))
@@ -352,37 +351,31 @@ def run_script(start_image, end_image1, end_image2 , other_image):
 
         if find_and_click_image(entry_window_title.get(), start):
             print("\n点击挑战")
-            end_fail_number_1 = 0
-            end_fail_number_2 = 0
-            start_fail_number_1 += 1
-            fight_number += 1
-            print(f"挑战次数:{fight_number}")
+            script_state.end_fail_number_1 = 0
+            script_state.end_fail_number_2 = 0
+            script_state.start_fail_number_1 += 1
+            script_state.fight_number += 1
+            print(f"挑战次数:{script_state.fight_number}")
             time.sleep(3)
 
         if not script_running:
             break
 
         if find_and_click_image(entry_window_title.get(), end1):
-            start_fail_number_1 = 0
-            end_fail_number_2 = 0
-            end_fail_number_1 += 1
-            print(f"结束页面1   点击次数：{end_fail_number_1}")
+            script_state.start_fail_number_1 = 0
+            script_state.end_fail_number_2 = 0
+            script_state.end_fail_number_1 += 1
+            print(f"结束页面1   点击次数：{script_state.end_fail_number_1}")
             time.sleep(1)
 
         if find_and_click_image(entry_window_title.get(), end2):
-            start_fail_number_1 = 0
-            end_fail_number_1 = 0
-            end_fail_number_2 += 1
-            print(f"结束页面2   点击次数：{end_fail_number_2}")
+            script_state.start_fail_number_1 = 0
+            script_state.end_fail_number_1 = 0
+            script_state.end_fail_number_2 += 1
+            print(f"结束页面2   点击次数：{script_state.end_fail_number_2}")
             time.sleep(1)
 
 def run_chaoguiwang_script(start_image1,start_image2, start_image3, end_image1 , other_image):
-    global fight_number
-    global xuanshang_number
-    global start_fail_number_1
-    global end_fail_number_2
-    global end_fail_number_1
-    global script_running  # 确保在此函数中使用全局变量
 
     # 使用 get_resource_path 函数获取资源文件的完整路径
     start1 = get_resource_path(os.path.join('resources', start_image1))
@@ -407,48 +400,36 @@ def run_chaoguiwang_script(start_image1,start_image2, start_image3, end_image1 ,
 
         if find_and_click_image(entry_window_title.get(), start1):
             print("\n召唤")
-            end_fail_number_1 = 0
-            start_fail_number_1 += 1
-            fight_number += 1
-            print(f"挑战鬼王:{fight_number}")
+            script_state.end_fail_number_1 = 0
+            script_state.start_fail_number_1 += 1
+            script_state.fight_number += 1
+            print(f"挑战鬼王:{script_state.fight_number}")
             time.sleep(2)
 
         if find_and_click_image(entry_window_title.get(), start2):
             print("挑战")
-            end_fail_number_1 = 0
-            end_fail_number_2 += 1
-            start_fail_number_1 = 0
+            script_state.end_fail_number_1 = 0
+            script_state.end_fail_number_2 += 1
+            script_state.start_fail_number_1 = 0
             time.sleep(2)
 
         if find_and_click_image(entry_window_title.get(), start3):
             print("准备")
-            end_fail_number_2 = 0
-            start_fail_number_1 += 1
+            script_state.end_fail_number_2 = 0
+            script_state.start_fail_number_1 += 1
             time.sleep(2)
 
         if not script_running:
             break
 
         if find_and_click_image(entry_window_title.get(), end1):
-            start_fail_number_1 = 0
-            end_fail_number_1 += 1
+            script_state.start_fail_number_1 = 0
+            script_state.end_fail_number_1 += 1
             print(f"结束")
             time.sleep(1)
 
 
 def run_28_script(start_28_image, start_image1, start_image2, start_bosses_image, move_image, end_image1, quit1_image1, quit2_image1, boss_baoxiang_image, boss_jiesuan_image, big_daoxiang_image , other_image):
-    global fight_number
-    global xuanshang_number
-    global start_fail_number_1
-    global start_fail_number_2
-    global end_fail_number_1
-    global quit_fail_number_1
-    global quit_fail_number_2
-    global tansuo_28_fail_number
-    global baoxiang_fail_number
-    global jiesuan_fail_number
-    global big_baoxiang_fail_number
-    global script_running  # 确保在此函数中使用全局变量 
 
     # 使用 get_resource_path 函数获取资源文件的完整路径
     start1 = get_resource_path(os.path.join('resources', start_image1))
@@ -478,28 +459,28 @@ def run_28_script(start_28_image, start_image1, start_image2, start_bosses_image
 
         if find_and_click_image(entry_window_title.get(), big_daoxiang):
             print("点击大宝箱")
-            end_fail_number_1 = 0
-            big_baoxiang_fail_number += 1
+            script_state.end_fail_number_1 = 0
+            script_state.baoxiang_fail_number += 1
             time.sleep(3)
             if find_and_click_image(entry_window_title.get(), end1):
-                big_baoxiang_fail_number = 0
-                end_fail_number_1 += 1
+                script_state.baoxiang_fail_number = 0
+                script_state.end_fail_number_1 += 1
                 print('获取大宝箱')
 
         if find_and_click_image(entry_window_title.get(), start1) :
             print("\n开始探索")
-            quit_fail_number_2 = 0
-            tansuo_28_fail_number = 0
-            baoxiang_fail_number = 0
-            end_fail_number_1 = 0
-            jiesuan_fail_number = 0
-            quit_fail_number_1 = 0
-            big_baoxiang_fail_number = 0
-            start_fail_number_2 = 0
-            start_fail_number_1 += 1
+            script_state.quit_fail_number_2 = 0
+            script_state.tansuo_28_fail_number = 0
+            script_state.baoxiang_fail_number = 0
+            script_state.end_fail_number_1 = 0
+            script_state.jiesuan_fail_number = 0
+            script_state.quit_fail_number_1 = 0
+            script_state.baoxiang_fail_number = 0
+            script_state.start_fail_number_2 = 0
+            script_state.start_fail_number_1 += 1
             time.sleep(3)
             if find_and_click_rightbottom(entry_window_title.get(), move):
-                start_fail_number_1 = 0
+                script_state.start_fail_number_1 = 0
                 print("点击移动")
                 rd_time = random.uniform(3, 5)  # 在需要时重新赋值
                 time.sleep(rd_time)
@@ -509,120 +490,77 @@ def run_28_script(start_28_image, start_image1, start_image2, start_bosses_image
                     time.sleep(rd_time)
 
         if find_and_quick_click(entry_window_title.get(), start_boss) or find_and_quick_click(entry_window_title.get(), start2):
-            start_fail_number_1 = 0
-            end_fail_number_1 = 0
-            start_fail_number_2 += 1
-            fight_number += 1
-            print(f"\n挑战,挑战次数:{fight_number}")
+            script_state.start_fail_number_1 = 0
+            script_state.end_fail_number_1 = 0
+            script_state.start_fail_number_2 += 1
+            script_state.fight_number += 1
+            print(f"\n挑战,挑战次数:{script_state.fight_number}")
             time.sleep(1)
 
         if find_and_click_image(entry_window_title.get(), end1):
             print("结束")
-            start_fail_number_2 = 0
-            big_baoxiang_fail_number = 0
-            end_fail_number_1 += 1
+            script_state.start_fail_number_2 = 0
+            script_state.baoxiang_fail_number = 0
+            script_state.end_fail_number_1 += 1
             time.sleep(rd_time)
 
             if not find_and_not_click(entry_window_title.get(), start2) and not find_and_not_click(entry_window_title.get(), start_boss) and not find_and_not_click(entry_window_title.get(), boss_baoxiang):
                 time.sleep(1)
                 if not find_and_not_click(entry_window_title.get(), start_28):
                     if find_and_click_image(entry_window_title.get(), quit1):
-                        end_fail_number_1 = 0
-                        quit_fail_number_1 += 1
+                        script_state.end_fail_number_1 = 0
+                        script_state.quit_fail_number_1 += 1
                         print("无怪物,点击退出")
                         time.sleep(1)
                         if find_and_click_image(entry_window_title.get(), quit2):
-                            quit_fail_number_1 = 0
-                            quit_fail_number_2 += 1
+                            script_state.quit_fail_number_1 = 0
+                            script_state.quit_fail_number_2 += 1
                             print("退出")
                             time.sleep(rd_time)
 
         if find_and_click_image(entry_window_title.get(), boss_baoxiang):
-            jiesuan_fail_number = 0
-            end_fail_number_1 = 0
-            baoxiang_fail_number += 1
+            script_state.jiesuan_fail_number = 0
+            script_state.end_fail_number_1 = 0
+            script_state.baoxiang_fail_number += 1
             print("点击宝箱")
             time.sleep(3)
             if find_and_click_lefttop(entry_window_title.get(), boss_jiesuan):
-                baoxiang_fail_number = 0
-                jiesuan_fail_number += 1
+                script_state.baoxiang_fail_number = 0
+                script_state.jiesuan_fail_number += 1
                 print("获得奖励")
                 time.sleep(1)
                 
         if not find_and_not_click(entry_window_title.get(), big_daoxiang) and find_and_click_image(entry_window_title.get(), start_28):
-            end_fail_number_1 = 0
-            jiesuan_fail_number = 0
-            baoxiang_fail_number = 0
-            tansuo_28_fail_number += 1
+            script_state.end_fail_number_1 = 0
+            script_state.jiesuan_fail_number = 0
+            script_state.baoxiang_fail_number = 0
+            script_state.tansuo_28_fail_number += 1
             print('第28章')
             time.sleep(1)
 
 def fight_end_num():
-    global fight_number
-    global start_fail_number_1
-    global start_fail_number_2
-    global end_fail_number_1
-    global end_fail_number_2
-    global quit_fail_number_1
-    global quit_fail_number_2
-    global tansuo_28_fail_number
-    global baoxiang_fail_number
-    global jiesuan_fail_number
-    global big_baoxiang_fail_number
 
     end_num =int(yuling_num.get())
     if not end_num:
         messagebox.showerror("错误", "请在挑战次数文本框中输入数字")
         return
 
-    if fight_number == end_num:
+    if script_state.fight_number == end_num:
         stop_script()
 
-    if big_baoxiang_fail_number == 3 or start_fail_number_1 == 3 or start_fail_number_2 == 3 or end_fail_number_1 == 3 or end_fail_number_2 == 3 or quit_fail_number_1 == 3 or quit_fail_number_2 == 3 or tansuo_28_fail_number == 3 or baoxiang_fail_number == 3 or jiesuan_fail_number == 3:
+    if script_state.baoxiang_fail_number == 3 or script_state.start_fail_number_1 == 3 or script_state.start_fail_number_2 == 3 or script_state.end_fail_number_1 == 3 or script_state.end_fail_number_2 == 3 or script_state.quit_fail_number_1 == 3 or script_state.quit_fail_number_2 == 3 or script_state.tansuo_28_fail_number == 3 or script_state.baoxiang_fail_number == 3 or script_state.jiesuan_fail_number == 3:
         stop_script()
         messagebox.showerror("错误","连续点击三次,脚本停止")
-        start_fail_number_1 = 0
-        start_fail_number_2 = 0
-        end_fail_number_1 = 0
-        end_fail_number_2 = 0
-        quit_fail_number_1 = 0
-        quit_fail_number_2 = 0
-        tansuo_28_fail_number = 0
-        baoxiang_fail_number = 0
-        jiesuan_fail_number = 0
-        big_baoxiang_fail_number = 0
 
 
 def stop_script():
-    global fight_number
-    global start_fail_number_1
-    global start_fail_number_2
-    global end_fail_number_1
-    global end_fail_number_2
-    global quit_fail_number_1
-    global quit_fail_number_2
-    global tansuo_28_fail_number
-    global baoxiang_fail_number
-    global jiesuan_fail_number
-    global big_baoxiang_fail_number
-    global script_running, fight_number, start_time
-    script_running = False
+    script_state.script_running = False
     elapsed_time = time.time() - start_time
     hours, remainder = divmod(elapsed_time, 3600)
     minutes, seconds = divmod(remainder, 60)
     current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-    messagebox.showinfo("挑战结束", f"挑战次数: {fight_number}\n拒绝悬赏次数: {xuanshang_number}\n运行时间: {int(hours)}小时 {int(minutes)}分钟 {int(seconds)}秒\n结束时间: {current_time}")
-    fight_number = 0
-    start_fail_number_1 = 0
-    start_fail_number_2 = 0
-    end_fail_number_1 = 0
-    end_fail_number_2 = 0
-    quit_fail_number_1 = 0
-    quit_fail_number_2 = 0
-    tansuo_28_fail_number = 0
-    baoxiang_fail_number = 0
-    jiesuan_fail_number = 0
-    big_baoxiang_fail_number = 0
+    messagebox.showinfo("挑战结束", f"挑战次数: {script_state.fight_number}\n拒绝悬赏次数: {script_state.xuanshang_number}\n运行时间: {int(hours)}小时 {int(minutes)}分钟 {int(seconds)}秒\n结束时间: {current_time}")
+    script_state.__init__()
 
 # 创建主窗口
 root = tk.Tk()
