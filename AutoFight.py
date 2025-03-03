@@ -335,10 +335,10 @@ def run_script(start_image, end_image1, end_image2 , other_image):
     end2 = get_resource_path(os.path.join('resources', end_image2))
     other = get_resource_path(os.path.join('resources', other_image))
     
-    while script_running:  # 检查 script_running 的状态
+    while script_state.script_running:  # 检查 script_running 的状态
         fight_end_num()
 
-        if not script_running:  # 如果 script_running 被设置为 False，立即退出循环
+        if not script_state.script_running:  # 如果 script_running 被设置为 False，立即退出循环
             break
 
         if find_and_click_image(entry_window_title.get(), other):
@@ -346,7 +346,7 @@ def run_script(start_image, end_image1, end_image2 , other_image):
             print("拒绝悬赏")
             time.sleep(1)
 
-        if not script_running:
+        if not script_state.script_running:
             break
 
         if find_and_click_image(entry_window_title.get(), start):
@@ -358,7 +358,7 @@ def run_script(start_image, end_image1, end_image2 , other_image):
             print(f"挑战次数:{script_state.fight_number}")
             time.sleep(3)
 
-        if not script_running:
+        if not script_state.script_running:
             break
 
         if find_and_click_image(entry_window_title.get(), end1):
@@ -384,10 +384,10 @@ def run_chaoguiwang_script(start_image1,start_image2, start_image3, end_image1 ,
     end1 = get_resource_path(os.path.join('resources', end_image1))
     other = get_resource_path(os.path.join('resources', other_image))
     
-    while script_running:  # 检查 script_running 的状态
+    while script_state.script_running:  # 检查 script_running 的状态
         fight_end_num()
 
-        if not script_running:  # 如果 script_running 被设置为 False，立即退出循环
+        if not script_state.script_running:  # 如果 script_running 被设置为 False，立即退出循环
             break
 
         if find_and_click_image(entry_window_title.get(), other):
@@ -395,7 +395,7 @@ def run_chaoguiwang_script(start_image1,start_image2, start_image3, end_image1 ,
             print("拒绝悬赏")
             time.sleep(1)
 
-        if not script_running:
+        if not script_state.script_running:
             break
 
         if find_and_click_image(entry_window_title.get(), start1):
@@ -419,7 +419,7 @@ def run_chaoguiwang_script(start_image1,start_image2, start_image3, end_image1 ,
             script_state.start_fail_number_1 += 1
             time.sleep(2)
 
-        if not script_running:
+        if not script_state.script_running:
             break
 
         if find_and_click_image(entry_window_title.get(), end1):
@@ -447,10 +447,10 @@ def run_28_script(start_28_image, start_image1, start_image2, start_bosses_image
 
     rd_time = random.uniform(3, 5)  # 为 rd_time 赋一个默认值
 
-    while script_running:  # 检查 script_running 的状态
+    while script_state.script_running:  # 检查 script_running 的状态
         fight_end_num()
         
-        if not script_running:  # 如果 script_running 被设置为 False，立即退出循环
+        if not script_state.script_running:  # 如果 script_running 被设置为 False，立即退出循环
             break
 
         if find_and_click_image(entry_window_title.get(), other):
@@ -555,7 +555,7 @@ def fight_end_num():
 
 def stop_script():
     script_state.script_running = False
-    elapsed_time = time.time() - start_time
+    elapsed_time = time.time() - script_state.start_time
     hours, remainder = divmod(elapsed_time, 3600)
     minutes, seconds = divmod(remainder, 60)
     current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
