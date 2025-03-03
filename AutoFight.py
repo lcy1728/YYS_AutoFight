@@ -376,6 +376,66 @@ def run_script(start_image, end_image1, end_image2 , other_image):
             print(f"结束页面2   点击次数：{end_fail_number_2}")
             time.sleep(1)
 
+def run_chaoguiwang_script(start_image1,start_image2, start_image3, end_image1 , other_image):
+    global fight_number
+    global xuanshang_number
+    global start_fail_number_1
+    global end_fail_number_2
+    global end_fail_number_1
+    global script_running  # 确保在此函数中使用全局变量
+
+    # 使用 get_resource_path 函数获取资源文件的完整路径
+    start1 = get_resource_path(os.path.join('resources', start_image1))
+    start2 = get_resource_path(os.path.join('resources', start_image2))
+    start3 = get_resource_path(os.path.join('resources', start_image3))
+    end1 = get_resource_path(os.path.join('resources', end_image1))
+    other = get_resource_path(os.path.join('resources', other_image))
+    
+    while script_running:  # 检查 script_running 的状态
+        fight_end_num()
+
+        if not script_running:  # 如果 script_running 被设置为 False，立即退出循环
+            break
+
+        if find_and_click_image(entry_window_title.get(), other):
+            xuanshang_number += 1
+            print("拒绝悬赏")
+            time.sleep(1)
+
+        if not script_running:
+            break
+
+        if find_and_click_image(entry_window_title.get(), start1):
+            print("\n召唤")
+            end_fail_number_1 = 0
+            start_fail_number_1 += 1
+            fight_number += 1
+            print(f"挑战鬼王:{fight_number}")
+            time.sleep(2)
+
+        if find_and_click_image(entry_window_title.get(), start2):
+            print("挑战")
+            end_fail_number_1 = 0
+            end_fail_number_2 += 1
+            start_fail_number_1 = 0
+            time.sleep(2)
+
+        if find_and_click_image(entry_window_title.get(), start3):
+            print("准备")
+            end_fail_number_2 = 0
+            start_fail_number_1 += 1
+            time.sleep(2)
+
+        if not script_running:
+            break
+
+        if find_and_click_image(entry_window_title.get(), end1):
+            start_fail_number_1 = 0
+            end_fail_number_1 += 1
+            print(f"结束  挑战次数:{fight_number}")
+            time.sleep(1)
+
+
 def run_28_script(start_28_image, start_image1, start_image2, start_bosses_image, move_image, end_image1, quit1_image1, quit2_image1, boss_baoxiang_image, boss_jiesuan_image, big_daoxiang_image , other_image):
     global fight_number
     global xuanshang_number
@@ -534,6 +594,17 @@ def fight_end_num():
 
 
 def stop_script():
+    global fight_number
+    global start_fail_number_1
+    global start_fail_number_2
+    global end_fail_number_1
+    global end_fail_number_2
+    global quit_fail_number_1
+    global quit_fail_number_2
+    global tansuo_28_fail_number
+    global baoxiang_fail_number
+    global jiesuan_fail_number
+    global big_baoxiang_fail_number
     global script_running, fight_number, start_time
     script_running = False
     elapsed_time = time.time() - start_time
@@ -542,13 +613,23 @@ def stop_script():
     current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     messagebox.showinfo("挑战结束", f"挑战次数: {fight_number}\n拒绝悬赏次数: {xuanshang_number}\n运行时间: {int(hours)}小时 {int(minutes)}分钟 {int(seconds)}秒\n结束时间: {current_time}")
     fight_number = 0
+    start_fail_number_1 = 0
+    start_fail_number_2 = 0
+    end_fail_number_1 = 0
+    end_fail_number_2 = 0
+    quit_fail_number_1 = 0
+    quit_fail_number_2 = 0
+    tansuo_28_fail_number = 0
+    baoxiang_fail_number = 0
+    jiesuan_fail_number = 0
+    big_baoxiang_fail_number = 0
 
 # 创建主窗口
 root = tk.Tk()
 root.title("痒痒鼠护肝小助手")
 # 设置窗口大小
 window_width = 400
-window_height = 200
+window_height = 250
 # 使用 after 方法在窗口显示后设置窗口位置
 root.after(0, center_window, root, window_width, window_height)
 
@@ -593,6 +674,10 @@ start_hunwang.grid(row=4, column=1, pady=10)
 # 困难28按钮
 start_28 = tk.Button(root, text="困难28",command=partial(start_script, run_28_script,'tansuo_tansuo_28.png','tansuo_tansuo.png','tansuo_start.png','tansuo_start_boss.png','tansuo_yidong.png','tansuo_jieshu.png','tansuo_tuichu_1.png','tansuo_tuichu_2.png','tansuo_baoxiang.png','tansuo_baoxiang_jiesuan.png','tansuo_bigbaoxiang.png','xuanshang_jvjue.png'))
 start_28.grid(row=4, column=2, pady=10)
+
+# 困难28按钮
+chaoguiwang = tk.Button(root, text="超鬼王",command=partial(start_script, run_chaoguiwang_script,'guiwang_zhaohuan.png','guiwang_tiaozhan.png','guiwang_zhunbei.png','guiwang_jieshu.png','xuanshang_jvjue.png'))
+chaoguiwang.grid(row=5, column=0, pady=10)
 
 # 运行主循环
 root.mainloop()
