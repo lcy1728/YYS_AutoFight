@@ -132,7 +132,7 @@ def find_and_click_image(window_title, target_image_path, confidence=0.85):
     return False
 
 
-def find_and_click_rightbottom(window_title, target_image_path, confidence=0.85):
+def find_and_click_rightbottom(window_title, target_image_path, confidence=0.7):
     hwnd = win32gui.FindWindow(None, window_title)
     if not hwnd:
         messagebox.showerror("错误", f"未找到窗口: {window_title}")
