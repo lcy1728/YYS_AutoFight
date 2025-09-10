@@ -656,7 +656,7 @@ start_yulin = tk.Button(root, text="御灵挑战", command=partial(start_script,
 start_yulin.grid(row=3, column=0, pady=10)
 
 # 创建爬塔按钮
-start_pata = tk.Button(root, text="活动挑战", command=partial(start_script, run_script, 'huodong_tiaozhan.png','huodong_jieshu_1.png','huodong_jieshu_2.png','xuanshang_jvjue.png'))
+start_pata = tk.Button(root, text="活动挑战", command=partial(start_script, run_script, 'huodong_tiaozhan.png','huodong_jieshu_1.png','huodong_jieshu_1.png','xuanshang_jvjue.png'))
 start_pata.grid(row=3, column=1, pady=10)
 
 # 创建活动按钮
@@ -675,7 +675,6 @@ start_hunwang.grid(row=4, column=1, pady=10)
 start_28 = tk.Button(root, text="困难28",command=partial(start_script, run_28_script,'tansuo_tansuo_28.png','tansuo_tansuo.png','tansuo_start.png','tansuo_start_boss.png','tansuo_yidong.png','tansuo_jieshu.png','tansuo_tuichu_1.png','tansuo_tuichu_2.png','tansuo_baoxiang.png','tansuo_baoxiang_jiesuan.png','tansuo_bigbaoxiang.png','xuanshang_jvjue.png'))
 start_28.grid(row=4, column=2, pady=10)
 
-# 困难28按钮
 chaoguiwang = tk.Button(root, text="超鬼王",command=partial(start_script, run_chaoguiwang_script,'guiwang_zhaohuan.png','guiwang_tiaozhan.png','guiwang_zhunbei.png','guiwang_jieshu.png','xuanshang_jvjue.png'))
 chaoguiwang.grid(row=5, column=0, pady=10)
 
